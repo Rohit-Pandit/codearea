@@ -15,15 +15,17 @@ const userSchema = new mongoose.Schema({
     },
     password : {
         type: String,
-        required: true
+        required: true,
+        select : false
     },
     solvedProblems: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Problem'
     }],
-    isAdmin: {
-        type: Boolean,
-        default: false
+    role : {
+        type: String,
+        enum: ['USER', 'ADMIN'],
+        default: 'USER'
     }
 },{timestamps: true})
 

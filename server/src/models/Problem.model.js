@@ -1,5 +1,34 @@
 import mongoose from "mongoose";
 
+
+const exampleSchema = new mongoose.Schema(
+  {
+    input: {
+      type: String,
+      required: true,
+    },
+
+    output: {
+      type: String,
+      required: true,
+    },
+
+    explanation: {
+      type: String,
+    },
+  },
+  { _id: false }
+);
+
+const starterCodeSchema = new mongoose.Schema(
+  {
+    javascript: String,
+    python: String,
+    cpp: String,
+  },
+  { _id: false }
+);
+
 const problemSchema = new mongoose.Schema(
   {
     title: {
@@ -19,21 +48,17 @@ const problemSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    example: [
-      {
-        input: String,
-        output: String,
-        explanation: String,
-      },
-    ],
-    starterCode: {
-      type: String,
-      default: "",
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-
+    example: [exampleSchema],
+    starterCode: starterCodeSchema,
+   
     constraints: [String],
   },
-  {},
+  {timestamps: true},
 );
 
 const Problem = mongoose.model("Problem", problemSchema);
