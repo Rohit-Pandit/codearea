@@ -114,4 +114,70 @@ const getProblemById = async (req, res) => {
   }
 };
 
-export { createProblem, getProblems, getProblemById };
+const updateProblem = async (req, res) => {
+  try {
+    const problem = await Problem.findById(req.params.id);
+
+    if (!problem) {
+      return res.status(404).json({
+        success: false,
+        message: "Problem not found",
+      });
+    }
+
+    const updatedProblem = await Problem.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Problem updated successfully",
+      data: updatedProblem,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const deleteProblem = async (req, res) => {
+  try {
+    const problem = await Problem.findById(
+      req.params.id
+    );
+
+    if (!problem) {
+      return res.status(404).json({
+        success: false,
+        message: "Problem not found",
+      });
+    }
+
+    await TestCase.deleteMany({
+      problemId: problem._id,
+    });
+
+    await Problem.findByIdAndDelete(
+      req.params.id
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Problem deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export { createProblem, getProblems, getProblemById, updateProblem, deleteProblem };
