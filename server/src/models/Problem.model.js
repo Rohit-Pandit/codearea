@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 const exampleSchema = new mongoose.Schema(
   {
     input: {
@@ -15,18 +14,34 @@ const exampleSchema = new mongoose.Schema(
 
     explanation: {
       type: String,
+      default: "",
     },
   },
-  { _id: false }
+  {
+    _id: false,
+  },
 );
 
-const starterCodeSchema = new mongoose.Schema(
+const codeSchema = new mongoose.Schema(
   {
-    javascript: String,
-    python: String,
-    cpp: String,
+    javascript: {
+      type: String,
+      default: "",
+    },
+
+    python: {
+      type: String,
+      default: "",
+    },
+
+    cpp: {
+      type: String,
+      default: "",
+    },
   },
-  { _id: false }
+  {
+    _id: false,
+  },
 );
 
 const problemSchema = new mongoose.Schema(
@@ -34,31 +49,67 @@ const problemSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
+      unique: true,
+      trim: true,
     },
+
     description: {
       type: String,
       required: true,
+      trim: true,
     },
+
     difficulty: {
       type: String,
-      enum: ["Easy", "Medium", "Hard"],
+      enum: ["EASY", "MEDIUM", "HARD"],
       required: true,
     },
-    tags: {
-      type: [String],
-      default: [],
+
+    tags: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    examples: [exampleSchema],
+
+    constraints: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    hints: {
+      type: String,
+      default: "",
     },
-    userId: {
+
+    editorial: {
+      type: String,
+      default: "",
+    },
+
+    starterCode: {
+      type: codeSchema,
+      default: () => ({}),
+    },
+
+    referenceSolutions: {
+      type: codeSchema,
+      default: () => ({}),
+    },
+
+    createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    example: [exampleSchema],
-    starterCode: starterCodeSchema,
-   
-    constraints: [String],
   },
-  {timestamps: true},
+  {
+    timestamps: true,
+  },
 );
 
 const Problem = mongoose.model("Problem", problemSchema);

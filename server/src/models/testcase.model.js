@@ -1,26 +1,33 @@
 import mongoose from "mongoose";
 
-
-const testcaseSchema = new mongoose.Schema({
+const testCaseSchema = new mongoose.Schema(
+  {
     problemId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Problem',
-        required: true
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Problem",
+      required: true,
     },
+
     input: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-    output: {
-        type: String,
-        required: true
+
+    expectedOutput: {
+      type: String,
+      required: true,
     },
+
     isHidden: {
-        type: Boolean,
-        default: false
-    }
-    
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-},{timestamps: true});
+const TestCase = mongoose.model("TestCase", testCaseSchema);
 
-const Testcase = mongoose.model("Testcase", testcaseSchema);
+export default TestCase;

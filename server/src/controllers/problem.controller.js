@@ -1,56 +1,117 @@
-import Problem from '../models/Problem.model.js';
+import Problem from "../models/Problem.model.js";
+import TestCase from "../models/TestCase.model.js";
 
+const createProblem = async (req, res) => {
+  try {
+    const {
+      title,
+      description,
+      difficulty,
+      tags,
+      examples,
+      constraints,
+      hints,
+      editorial,
+      starterCode,
+      referenceSolutions,
+      testCases,
+    } = req.body;
 
-const getAllProblems = async (req, res) => {
-    try {
-        const problems = await Problem.find();
-        if(problems.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: 'No problems found'
-            });
-        }
-        res.status(200).json({
-            success: true,
-            data: problems,
-            message: 'Problems fetched successfully'
-        });
+    const existingProblem = await Problem.findOne({
+      title,
+    });
+
+    if (existingProblem) {
+      return res.status(400).json({
+        success: false,
+        message: "Problem already exists",
+      });
     }
-    catch (error) {
-        res.status(500).json({
-            success: false,
-            error: {
-                message: error.message,
-                code: error.code
-            }
-        });
+
+    const problem = await Problem.create({
+      title,
+      description,
+      difficulty,
+      tags,
+      examples,
+      constraints,
+      hints,
+      editorial,
+      starterCode,
+      referenceSolutions,
+      createdBy: req.user._id,
+    });
+
+    if (testCases?.length) {
+      await TestCase.insertMany(
+        testCases.map((testCase) => ({
+          ...testCase,
+          problemId: problem._id,
+        })),
+      );
     }
-}
+
+    return res.status(201).json({
+      success: true,
+      message: "Problem created successfully",
+      data: problem,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const getProblems = async (req, res) => {
+  try {
+    const problems = await Problem.find()
+      .select("title difficulty tags createdAt")
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      count: problems.length,
+      data: problems,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 
 const getProblemById = async (req, res) => {
-    try {
-        const problem = await Problem.findById(req.params.id);
-        if(!problem) {
-            return res.status(404).json({
-                success: false,
-                message: 'Problem not found'
-            });
-        }
-        res.status(200).json({
-            success: true,
-            data: problem,
-            message: 'Problem fetched successfully'
-        });
-    }
-    catch (error) {
-        res.status(500).json({
-            success: false,
-            error: {
-                message: error.message,
-                code: error.code
-            }
-        });
-    }
-}
+  try {
+    const problem = await Problem.findById(req.params.id);
 
-export {getAllProblems, getProblemById};
+    if (!problem) {
+      return res.status(404).json({
+        success: false,
+        message: "Problem not found",
+      });
+    }
+
+    const sampleTestCases = await TestCase.find({
+      problemId: problem._id,
+      isHidden: false,
+    }).select("input expectedOutput isHidden");
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        problem,
+        sampleTestCases,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export { createProblem, getProblems, getProblemById };
