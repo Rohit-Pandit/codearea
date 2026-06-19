@@ -66,9 +66,30 @@ const createProblem = async (req, res) => {
 
 const getProblems = async (req, res) => {
   try {
-    const problems = await Problem.find()
+    const { difficulty, tag, search } = req.query;
+
+    const filter = {};
+
+    if (difficulty) {
+      filter.difficulty = difficulty;
+    }
+
+    if (tag) {
+      filter.tags = tag;
+    }
+
+    if (search) {
+      filter.title = {
+        $regex: search,
+        $options: "i",
+      };
+    }
+
+    const problems = await Problem.find(filter)
       .select("title difficulty tags createdAt")
-      .sort({ createdAt: -1 });
+      .sort({
+        createdAt: -1,
+      });
 
     return res.status(200).json({
       success: true,
@@ -149,9 +170,7 @@ const updateProblem = async (req, res) => {
 
 const deleteProblem = async (req, res) => {
   try {
-    const problem = await Problem.findById(
-      req.params.id
-    );
+    const problem = await Problem.findById(req.params.id);
 
     if (!problem) {
       return res.status(404).json({
@@ -164,9 +183,7 @@ const deleteProblem = async (req, res) => {
       problemId: problem._id,
     });
 
-    await Problem.findByIdAndDelete(
-      req.params.id
-    );
+    await Problem.findByIdAndDelete(req.params.id);
 
     return res.status(200).json({
       success: true,
@@ -180,4 +197,10 @@ const deleteProblem = async (req, res) => {
   }
 };
 
-export { createProblem, getProblems, getProblemById, updateProblem, deleteProblem };
+export {
+  createProblem,
+  getProblems,
+  getProblemById,
+  updateProblem,
+  deleteProblem,
+};
