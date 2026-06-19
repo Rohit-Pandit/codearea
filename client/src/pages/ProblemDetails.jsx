@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getProblemById } from "../api/problems";
+import CodeEditor from "../components/CodeEditor.jsx";
 
 const ProblemDetails = () => {
   const { id } = useParams();
@@ -36,6 +37,7 @@ const ProblemDetails = () => {
       <p>{problemDetails.problem.description}</p>
 
       <p>{problemDetails.problem.difficulty}</p>
+      <CodeEditor />
     </div>
   );
 };
