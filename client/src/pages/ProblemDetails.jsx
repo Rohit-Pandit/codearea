@@ -109,8 +109,16 @@ const ProblemDetails = () => {
       <div className="bg-slate-900 rounded-lg p-6 overflow-y-auto">
         <h1 className="text-3xl font-bold mb-2">{problem?.title}</h1>
 
-        <span className="inline-block bg-green-700 px-3 py-1 rounded text-sm mb-4">
-          {problem?.difficulty}
+        <span
+          className={
+            problem.difficulty === "EASY"
+              ? "text-green-400"
+              : problem.difficulty === "MEDIUM"
+                ? "text-yellow-400"
+                : "text-red-400"
+          }
+        >
+          {problem.difficulty}
         </span>
 
         <p className="text-slate-300 mb-6">{problem?.description}</p>
