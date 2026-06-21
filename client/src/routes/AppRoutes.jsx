@@ -4,34 +4,41 @@ import Problems from "../pages/Problems.jsx";
 import Login from "../pages/Login.jsx"; 
 import Register from "../pages/Register.jsx";
 import ProblemDetails from "../pages/ProblemDetails.jsx";
+import MainLayout from "../layout/Mainlayout.jsx";
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Problems />} />
+  <Routes>
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+    <Route element={<MainLayout />}>
 
-        <Route
-          path="/register"
-          element={<Register />}
-        />
+      <Route path="/" element={<Problems />} />
 
-        <Route
-          path="/problems/:id"
-          element={<ProblemDetails />}
-        />
+      <Route
+        path="/problems/:id"
+        element={<ProblemDetails />}
+      />
 
-        <Route
-          path="/profile"
-          element={<Profile />}
-        />
-      </Routes>
-    </BrowserRouter>
+      <Route
+        path="/profile"
+        element={<Profile />}
+      />
+
+    </Route>
+
+    <Route
+      path="/login"
+      element={<Login />}
+    />
+
+    <Route
+      path="/register"
+      element={<Register />}
+    />
+
+  </Routes>
+</BrowserRouter>
   );
 };
 

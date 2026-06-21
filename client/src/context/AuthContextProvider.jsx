@@ -11,7 +11,7 @@ const AuthContextProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         const res = await getMe();
-        console.log(res.data.data);
+        console.log("auth",res.data.data);
 
         setUser(res.data.data);
       } catch {

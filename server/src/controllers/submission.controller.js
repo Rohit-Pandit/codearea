@@ -55,7 +55,10 @@ const submitSolution = async (req, res) => {
         break;
       }
 
-      if (result.actualOutput.trim() !== result.expectedOutput.trim()) {
+      if (
+        (result.actualOutput || "").trim() !==
+        (result.expectedOutput || "").trim()
+      ) {
         verdict = "Wrong Answer";
         break;
       }
@@ -64,7 +67,8 @@ const submitSolution = async (req, res) => {
     const passedCount = results.filter(
       (result) =>
         result.status === "Accepted" &&
-        result.actualOutput.trim() === result.expectedOutput.trim(),
+        (result.actualOutput || "").trim() ===
+          (result.expectedOutput || "").trim(),
     ).length;
 
     const submission = await Submission.create({

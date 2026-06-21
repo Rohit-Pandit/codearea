@@ -1,20 +1,13 @@
 import Editor from "@monaco-editor/react";
-import { useState } from "react";
 
-const CodeEditor = () => {
-  const [code, setCode] = useState(
-`function solve() {
-
-}`
-  );
-
+const CodeEditor = ({ code, setCode }) => {
   return (
     <Editor
-      height="600px"
+      height="500px"
+      theme="vs-dark"
       defaultLanguage="javascript"
       value={code}
-      onChange={(value) => setCode(value)}
-      theme="vs-dark"
+      onChange={(value) => setCode(value || "")}
     />
   );
 };
