@@ -45,24 +45,31 @@ const submitSolution = async (req, res) => {
       testCases,
     });
 
-    console.log("Execution results:", results);
 
     let verdict = "Accepted";
 
-    for (const result of results) {
-      if (result.status !== "Accepted") {
-        verdict = result.status;
-        break;
-      }
-
-      if (
-        (result.actualOutput || "").trim() !==
-        (result.expectedOutput || "").trim()
-      ) {
-        verdict = "Wrong Answer";
-        break;
-      }
+for (const result of results) {
+  if (result.status !== "Accepted") {
+    if (result.status.includes("Runtime Error")) {
+      verdict = "Runtime Error";
+    } else if (result.status.includes("Compilation Error")) {
+      verdict = "Compilation Error";
+    } else if (result.status.includes("Time Limit")) {
+      verdict = "Time Limit Exceeded";
+    } else if (result.status.includes("Memory Limit")) {
+      verdict = "Memory Limit Exceeded";
+    } else {
+      verdict = result.status;
     }
+
+    break;
+  }
+
+  if (result.actualOutput.trim() !== result.expectedOutput.trim()) {
+    verdict = "Wrong Answer";
+    break;
+  }
+}
 
     const passedCount = results.filter(
       (result) =>
@@ -99,13 +106,20 @@ const submitSolution = async (req, res) => {
       submission,
     });
   } catch (error) {
-    console.error(error);
+  console.error(error);
 
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+  if (error.errors) {
+    console.log("Validation Errors:");
+    Object.values(error.errors).forEach((err) =>
+      console.log(err.path, err.message)
+    );
   }
+
+  return res.status(500).json({
+    success: false,
+    message: error.message,
+  });
+}
 };
 const getMySubmissions = async (req, res) => {
   try {

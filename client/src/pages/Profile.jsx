@@ -41,10 +41,6 @@ const Profile = () => {
         </p>
 
         <p className="mt-2">
-          Role: {user?.role}
-        </p>
-
-        <p className="mt-2">
           Total Submissions: {submissions.length}
         </p>
       </div>

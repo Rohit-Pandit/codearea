@@ -52,27 +52,25 @@ const AdminDashboard = () => {
 
     try {
       const payload = {
-        title: form.title,
-        description: form.description,
+        title: form.title?.trim(),
+        description: form.description?.trim(),
         difficulty: form.difficulty,
-
         tags: form.tags
           .split(",")
           .map((tag) => tag.trim())
           .filter(Boolean),
 
-        examples: form.examples ? JSON.parse(form.examples) : [],
+        examples: form.examples ? JSON.parse(form.examples) : undefined,
 
         constraints: form.constraints
           ? form.constraints
               .split("\n")
               .map((c) => c.trim())
               .filter(Boolean)
-          : [],
+          : undefined,
 
-        hints: form.hints,
-
-        editorial: form.editorial,
+        hints: form.hints || undefined,
+        editorial: form.editorial || undefined,
 
         starterCode: {
           javascript: form.starterCodeJS,
@@ -90,6 +88,32 @@ const AdminDashboard = () => {
         await updateProblem(editingId, payload);
 
         alert("Problem Updated Successfully");
+        setEditingId(null);
+
+setForm({
+  title: "",
+  description: "",
+  difficulty: "EASY",
+  tags: "",
+
+  starterCodeJS: "",
+  starterCodePython: "",
+  starterCodeCpp: "",
+
+  referenceJS: "",
+  referencePython: "",
+  referenceCpp: "",
+
+  testCases: "",
+
+  examples: "",
+  constraints: "",
+  hints: "",
+  editorial: "",
+});
+
+        await fetchProblems();
+        return
       } else {
         await createProblem({
           ...payload,
@@ -191,6 +215,9 @@ const AdminDashboard = () => {
         onSubmit={handleCreate}
         className="bg-slate-900 p-6 rounded-xl space-y-5 mb-10"
       >
+        {editingId && (
+          <p className="text-yellow-400">Currently editing: {form.title}</p>
+        )}
         <h2 className="text-2xl font-semibold">
           {editingId ? "Edit Problem" : "Create Problem"}
         </h2>

@@ -148,7 +148,9 @@ const updateProblem = async (req, res) => {
 
     const updatedProblem = await Problem.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      {
+    $set: req.body,
+  },
       {
         new: true,
         runValidators: true,

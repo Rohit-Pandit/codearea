@@ -9,6 +9,7 @@ import OutputPanel from "../components/OutputPanel.jsx";
 
 import { submitSolution } from "../api/submission.js";
 
+
 const ProblemDetails = () => {
   const { id } = useParams();
 
@@ -71,7 +72,18 @@ const ProblemDetails = () => {
           result.status?.description,
       );
     } catch (error) {
-      console.error(error);
+      const status = error.response?.status;
+
+      if (status === 401) {
+        alert("Please login first");
+      } else if (status === 403) {
+        alert("You don't have permission");
+      } else if (status === 400) {
+        alert(error.response?.data?.message || "Bad request");
+      } else {
+        alert("Something went wrong");
+      }
+
       setOutput("Execution failed");
     } finally {
       setRunning(false);
@@ -90,7 +102,17 @@ const ProblemDetails = () => {
 
       setVerdict(res.data);
     } catch (error) {
-      console.error(error);
+      const status = error.response?.status;
+
+      if (status === 401) {
+        alert("Please login first");
+      } else if (status === 403) {
+        alert("You don't have permission");
+      } else if (status === 400) {
+        alert(error.response?.data?.message || "Bad request");
+      } else {
+        alert("Something went wrong");
+      }
     } finally {
       setSubmitting(false);
     }
