@@ -1,5 +1,5 @@
 import Problem from "../models/Problem.model.js";
-import TestCase from "../models/TestCase.model.js";
+import TestCase from "../models/testcase.model.js";
 
 const createProblem = async (req, res) => {
   try {
