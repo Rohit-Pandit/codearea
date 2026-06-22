@@ -163,6 +163,22 @@ const ProblemDetails = () => {
       </div>
 
       <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <label className="font-medium">Language:</label>
+
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="bg-slate-800 border border-slate-700 rounded px-3 py-2"
+          >
+            <option value="javascript">JavaScript</option>
+
+            <option value="python">Python</option>
+
+            <option value="cpp">C++</option>
+          </select>
+        </div>
+
         <CodeEditor
           code={code}
           setCode={setCode}
